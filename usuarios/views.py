@@ -35,8 +35,8 @@ def login(request):
 
         return render(request, "usuarios/login.html", {"form": form})
 
-def cadastro(request):
 
+def cadastro(request):
 
         form = CadastroForm()
 
