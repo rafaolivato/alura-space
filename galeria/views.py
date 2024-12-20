@@ -29,7 +29,7 @@ def buscar(request):
         if nome_a_buscar:
             fotografias = fotografias.filter(nome__icontains=nome_a_buscar)
    
-    return render(request, 'galeria/buscar.html', {"cards": fotografias})
+    return render(request, 'galeria/index.html', {"cards": fotografias})
 
 def nova_imagem(request):
     if not request.user.is_authenticated:
@@ -68,5 +68,17 @@ def editar_imagem(request, foto_id):
     return render(request, 'galeria/editar_imagem.html', {'form': form, 'foto_id': foto_id, 'fotografia': fotografia})
 
 
-def deletar_imagem(request):
-    pass
+def deletar_imagem(request,foto_id):
+    fotografia = Fotografia.objects.get(id=foto_id)
+    fotografia.delete()
+    messages.success(request, "Imagem deletada com sucesso!")
+    return redirect('index')
+
+# views.py
+def filtro(request, categoria):
+    # Normalizar a categoria para evitar problemas com case sensitivity e espaços
+    categoria = categoria.strip().upper()
+
+    fotografias = Fotografia.objects.filter(publicada=True, categoria=categoria).order_by("data_fotografia")
+
+    return render(request, 'galeria/index.html', {"cards": fotografias})
